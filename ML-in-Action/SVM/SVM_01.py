@@ -92,4 +92,35 @@ def SMO_simple(data,label,C,toler,maxIter):
             # yi*f(i) == 1 and 0<alpha< C (on the boundary)
             # yi*f(i) <= 1 and alpha = C (between the boundary)
             # labelMat[i]*Ei 如果超出了 toler， 才需要优化。至于正负号，我们考虑绝对值就对了。
-            #
+            if(((labelMat[i]*E_i < -toler) and (alphas[i]<C)) or ((labelMat[i]*E_i > toler) and (alphas[i] > 0))):
+                # 如果满足优化的条件，我们就随机选取非i的一个点，进行优化比较
+                j = selectJrand(i, m)
+                # 预测j的结果
+                fx_j = float(np.multiply(alphas,labelMat).T*(dataMat*dataMat[j,:].T))
+                #计算预测值与真实值的误差
+                E_j = fx_j - float(labelMat[j])
+
+                alphaIold = alphas[i].copy()
+                alphaJold = alphas[j].copy()
+
+                # L和H用于将alphas[j]调整到0-C之间。如果L==H，就不做任何改变，直接执行continue语句
+                # labelMat[i] != labelMat[j] 表示异侧，就相减，否则是同侧，就相加。
+                if (labelMat[i] != labelMat[j]):
+                    L = max(0, alphas[j] - alphas[i])
+                    H = min(C, C + alphas[j] - alphas[i])
+                else:
+                    L = max(0, alphas[j] + alphas[i] - C)
+                    H = min(C, alphas[j] + alphas[i])
+                # 如果相同，就没发优化了
+                if L == H:
+                    print("L==H")
+                    continue
+
+                # eta是alphas[j]的最优修改量，如果eta==0，需要退出for循环的当前迭代过程
+                # 参考《统计学习方法》李航-P125~P128<序列最小最优化算法>
+                eta = 2.0 * dataMat[i, :]*dataMat[j, :].T - dataMat[i, :]*dataMat[i, :].T - dataMat[j, :]*dataMat[j, :].T
+                if eta >= 0:
+                    print("eta>=0")
+                    continue
+
+
