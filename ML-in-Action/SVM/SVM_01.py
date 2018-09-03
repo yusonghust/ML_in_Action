@@ -23,3 +23,17 @@ def loadDataSet(fileName):
         dataMat.append([float(lineArr[0]), float(lineArr[1])])
         labelMat.append(float(lineArr[2]))
     return dataMat, labelMat
+
+def selectJrand(i, m):
+    """
+    随机选择一个整数
+    Args:
+        i  第一个alpha的下标
+        m  所有alpha的数目
+    Returns:
+        j  返回一个不为i的随机数，在0~m之间的整数值
+    """
+    j = i
+    while j == i:
+        j = int(random.uniform(0, m))
+    return j
