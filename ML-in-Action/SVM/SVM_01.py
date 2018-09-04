@@ -99,7 +99,7 @@ def SMO_simple(data,label,C,toler,maxIter):
                 fx_j = float(np.multiply(alphas,labelMat).T*(dataMat*dataMat[j,:].T))
                 #计算预测值与真实值的误差
                 E_j = fx_j - float(labelMat[j])
-
+                #为了方便更新之后检测参数的变化，首先copy一下,这样后面的改动不会影响这里的结果
                 alphaIold = alphas[i].copy()
                 alphaJold = alphas[j].copy()
 
@@ -122,5 +122,63 @@ def SMO_simple(data,label,C,toler,maxIter):
                 if eta >= 0:
                     print("eta>=0")
                     continue
+
+                #更新alpha
+                alphas[j] = alphas[j] - labelMat[j]*(E_i-E_j)/eta
+                #限制其更新范围
+                alphas[j] = clipAlpha(alphas[j],H,L)
+                #检测参数更新的幅度，如果更新幅度太小直接退出循环
+                if(abs(alphas[j] - alphaJold) < 0.00001):
+                    continue
+                alphas[i] = alphas[i] + labelMat[i]*labelMat[j](alphaJold-alphas[i])
+
+                #计算参数b
+                b_1_new = b - E_i - (alphas[i]-alphaIold)*labelMat[i]*dataMat[i,:]*dataMat[i:,].T - labelMat[j]*(alphas[j]-alphaJold)*dataMat[i, :]*dataMat[j, :].T
+                b_2_new = b - E_j - (alphas[i]-alphaIold)*labelMat[i]*dataMat[j,:]*dataMat[i:,].T - labelMat[j]*(alphas[j]-alphaJold)*dataMat[j, :]*dataMat[j, :].T
+
+
+                if((0<alphas[i]) and (C>alphas[i])):
+                    b = b_1_new
+                elif((0<alphas[j]) and (C>alphas[j])):
+                    b = b_2_new
+                else:
+                    b = (b_1_new + b_2_new)/2.0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
