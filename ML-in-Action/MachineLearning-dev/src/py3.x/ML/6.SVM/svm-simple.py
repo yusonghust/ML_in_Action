@@ -237,7 +237,11 @@ def plotfig_SVM(xMat, yMat, ws, b, alphas):
 
 if __name__ == "__main__":
     # 获取特征和目标变量
+<<<<<<< HEAD
     dataArr, labelArr = loadDataSet('D:/Github/ML_in_Action/ML-in-Action/MachineLearning-dev/input/6.SVM/testSet.txt')
+=======
+    dataArr, labelArr = loadDataSet('/Users/yusong/Documents/ML_in_Action/ML-in-Action/MachineLearning-dev/input/6.SVM/testSet.txt')
+>>>>>>> b7aaabfa3c678ee962bb4590e1ddb550f1e24ef5
     # print(labelArr)
 
     # b是常量值， alphas是拉格朗日乘子

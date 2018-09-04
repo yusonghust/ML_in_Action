@@ -98,6 +98,7 @@ def SMO_simple(data,label,C,toler,maxIter):
                 # 如果满足优化的条件，我们就随机选取非i的一个点，进行优化比较
                 j = selectJrand(i, m)
                 # 预测j的结果
+
                 fx_j = float(np.multiply(alphas,labelMat).T*(dataMat*dataMat[j,:].T)) + b
                 #计算预测值与真实值的误差
                 E_j = fx_j - float(labelMat[j])
@@ -130,20 +131,24 @@ def SMO_simple(data,label,C,toler,maxIter):
                 #检测参数更新的幅度，如果更新幅度太小直接退出循环
                 if(abs(alphas[j] - alphaJold) < 0.00001):
                     continue
+
                 alphas[i] = alphas[i] + labelMat[j]*labelMat[i]*(alphaJold-alphas[j])
 
                 #计算参数b
                 b_1_new = b - E_i - labelMat[i]*(alphas[i]-alphaIold)*dataMat[i,:]*dataMat[i,:].T - labelMat[j]*(alphas[j]-alphaJold)*dataMat[i, :]*dataMat[j, :].T
                 b_2_new = b - E_j - labelMat[i]*(alphas[i]-alphaIold)*dataMat[i,:]*dataMat[j,:].T - labelMat[j]*(alphas[j]-alphaJold)*dataMat[j, :]*dataMat[j, :].T
 
-                # if((alphas[i]==0) or (alphas[j]==0) or (alphas[i]==C) or (alphas[j]==1)):
-                #     b = (b_1_new + b_2_new)/2.0
+
+
+
+
                 if((0<alphas[i]) and (C>alphas[i])):
                     b = b_1_new
                 elif((0<alphas[j]) and (C>alphas[j])):
                     b = b_2_new
                 else:
                     b = (b_1_new + b_2_new)/2.0
+
 
                 alphaPairsChanged += 1
         #连续若干次轮后都无法更新参数说明已经收敛
@@ -223,6 +228,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
